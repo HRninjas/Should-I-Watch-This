@@ -5,8 +5,9 @@ angular.module('app', [
   'app.shorten',
   'app.auth',
   'ngRoute',
-  'app.directive'
- ,'app.autocomplete'
+  'app.graphdirective',
+  'app.piedirective',
+  'app.autocomplete'
 ])
 .config(function($routeProvider, $httpProvider) {
 

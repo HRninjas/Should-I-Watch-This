@@ -44,7 +44,8 @@ app.controller('appCtrl', function($scope, $http) {
   // * show meta data as an object (reponse from AJAX call?)
   $scope.results = [];
   // * d3 object / data set (when data is changed page is update)
-  $scope.briansPie = [];
+  $scope.totalResults = [];
+  $scope.pie;
   // * search function
   $scope.submit = function() {
     // - make call to AJAX factory
@@ -53,7 +54,12 @@ app.controller('appCtrl', function($scope, $http) {
     var seasonExists = true;
     var queryString = $scope.query;
     $scope.query = '';
-
+    var generateRandomColor = function() {
+      var r = (Math.round(Math.random()* 127) + 127).toString(16);
+      var g = (Math.round(Math.random()* 127) + 127).toString(16);
+      var b = (Math.round(Math.random()* 127) + 127).toString(16);
+      return '#' + r + g + b;
+    }
 
 
     var getAllSeasons = function(seasonNumber) {
@@ -69,11 +75,13 @@ app.controller('appCtrl', function($scope, $http) {
       }).then(function(res) {
         console.log(res.data, 'this is the response');
         if (res.data.Response === 'True') {
-          $scope.results = res.data;
-          $scope.briansPie.push(res.data);
+          var color = generateRandomColor(); 
+          $scope.results = [res.data, color];
+          $scope.totalResults.push([res.data, color]);
           getAllSeasons(seasonNumber + 1);
         } else {
-          console.log('this is brians pie', $scope.briansPie);
+          $scope.pie = $scope.totalResults;
+          $scope.totalResults = [];
         }
         //run d3 function with data
       }, function(err) {

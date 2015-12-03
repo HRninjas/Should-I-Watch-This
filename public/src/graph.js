@@ -3,8 +3,8 @@
 
 //Need Width, Height, Padding, Based on Object
 //(Would like to use percentages for dynamic sizing based on browser)
-var w = 1100;
-var h = 400;
+var w = 900;
+var h = 300;
 var padding = 25;
 //We don't know where this will be yet, needs to change.
 var data_url = {};
@@ -14,15 +14,17 @@ var ratingdataset = [];
 var infoset = [];
 var showName = '';
 var seasonAvg = [];
+var seasonColor;
 
-angular.module('app.directive', [])
+angular.module('app.graphdirective', [])
 .directive('graph', function($parse, $window) {
   return {
     restrict: 'EA',
     template: '<section class="graph"><div id="graph"></div></section>',
     link: function(scope, elem, attrs) {
       scope.$watchCollection('results', function(newVal, oldVal) {
-        data_url = newVal || {};
+        data_url = newVal[0] || {};
+        seasonColor = newVal[1];
         drawGraph();
       });
     }
@@ -67,10 +69,11 @@ var drawGraph = function() {
       var rating = parseFloat(episode["imdbRating"]);
       var showTitle = episode["Title"];
       var season = parseInt(data_url["Season"]);
+      var link = "http://www.imdb.com/title/" + episode["imdbID"];
       //fill the d3 dataset variables
-      episodedataset.push([epId, rating]);
+      episodedataset.push([epId, rating, seasonColor, link]);
       ratingdataset.push(rating);
-      infoset.push([showTitle, rating, season, epNum]);
+      infoset.push([showTitle, rating, season, epNum, seasonColor]);
       seasonAvg.push([season, rating]);
       epId++;
     }
@@ -83,7 +86,7 @@ var seasonScore = [];
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<strong>Title:</strong> <span style='color:#2FFF4D'>" + d[0] + "</span>" + "<br>" + "<strong>Rating:</strong> <span style='color:#2FFF4D'>" + d[1] + "</span>" + "<br>" + "<strong>Season:</strong> <span style='color:#2FFF4D'>" + d[2] + "</span>" + "<br>" + "<strong>Episode:</strong> <span style='color:#2FFF4D'>" + d[3] + "</span>";
+      return "<strong>Title:</strong> <span style='color:" + d[4] + "'>" + d[0] + "</span>" + "<br>" + "<strong>Rating:</strong> <span style='color:" + d[4] + "'>" + d[1] + "</span>" + "<br>" + "<strong>Season:</strong> <span style='color:" + d[4] + "'>" + d[2] + "</span>" + "<br>" + "<strong>Episode:</strong> <span style='color:" + d[4] + "'>" + d[3] + "</span>";
     });
 
   //Define Graph Space, Initialize d3 (This sets how big the div is)
@@ -183,9 +186,9 @@ var seasonScore = [];
   /*point attributes*/
   points.attr('cy', 0)
     .transition()
-    .duration(1500)
+    .duration(3500)
     .delay(function(d, i) {
-      return (i * 100) + 500;
+      return (i * 50) + 100;
     })
     .ease('elastic')
     .attr({
@@ -196,7 +199,12 @@ var seasonScore = [];
         return yScale(d[1]);
       },
       'r': 7,
-      'class': 'datapoint',
+      'cursor': 'pointer',
+      'stroke': '#fff',
+      'fill': function(d) {
+        return d[2];
+      },
+      'stroke-width': 2,
       'id': function(d, i) {
         return i;
       }
@@ -208,7 +216,7 @@ var seasonScore = [];
     .attr("x", w / 2)
     .attr("y", 14)
     .attr("text-anchor", "middle")
-    .style("fill", "#2FFF4D")
+    .style("fill", "white")
     .text(showName);
 
 svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', tip.hide);
@@ -271,7 +279,8 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
       .attr("y2", function(d) {
         return yScale(d[3]);
       })
-      .style("stroke", "rgb(47,255,77)")   
+      .style("stroke", "white")
+      .style("stroke-width", 2)   
     //ShouldI function
     var avg = y1 / len;
     if (avg >= 7) {
@@ -281,7 +290,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("You're Missing Out!");
       } else if(slope > 0){
@@ -290,7 +299,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w/2)             
           .attr("y", 350)
           .attr("text-anchor", "middle") 
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("Yes!");
         }else if (slope < 0 && slope > -0.03) {
@@ -299,7 +308,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("Sure");
       } else if (slope < 0 && slope > -0.04) {
@@ -308,7 +317,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("Meh.");
       } else {
@@ -317,7 +326,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("Eeeeh...");
       }
@@ -328,7 +337,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("Go For It!");
       } else if (slope > 0.03) {
@@ -337,7 +346,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("Yup");
       } else if (slope > 0) {
@@ -346,7 +355,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("Eeeeh...");
       } else if (slope < 0 && slope > -0.04) {
@@ -355,7 +364,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("No.");
       } else {
@@ -364,7 +373,7 @@ svg.selectAll('circle').data(infoset).on('mouseover', tip.show).on('mouseout', t
           .attr("x", w / 2)
           .attr("y", 350)
           .attr("text-anchor", "middle")
-          .style("fill", "#2FFF4D")
+          .style("fill", "#89ba2c")
           .attr("font-size", "34px")
           .text("HAHAHA...Oh You were Serious...");
       }        
