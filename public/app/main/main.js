@@ -1,23 +1,46 @@
 // instantiate an angular
 var app = angular.module('app.main', []);
-  // declare one controller for the app
+// declare one controller for the app
 app.controller('appCtrl', function($scope, $http) {
   // * scope will have the query string as a variable
   $scope.query = '';
-   $scope.queryId = null;
+  $scope.queryId = [];
 
-// #############
-// #autocomplete
-// #############
+  $scope.watchlist = [];
+
+  $scope.click = function(x) {
+    //  console.log($scope.query);
+    $scope.watchlist.push($scope.results.Title)
+      // console.log($scope.watchlist);
+  }
 
 
-  //   $scope.isDisabled = true;
-    //  $scope.validateModel = function () {
-    //     $scope.isDisabled = ($scope.queryId === null);
-    // };
-    // $scope.$watch('queryId', function() {
-    //     $scope.validateModel();
-    // });
+
+
+    // $scope.getPoster = function(title) {
+    //   $http({
+    //     //need to handle url spaces
+    //     method: 'GET',
+    //     params: {
+    //       t: queryString
+    //     },
+    //     url: 'api/shows/show',
+    //   }).then(function(res) {
+    //     console.log(res.data, 'this is the response');
+    //     if (res.data.Response === 'True') {
+    //       $scope.results = res.data;
+    //       $scope.briansPie.push(res.data);
+    //       getAllSeasons(seasonNumber + 1);
+    //     } else {
+    //       console.log('this is brians pie', $scope.briansPie);
+    //     }
+    //     //run d3 function with data
+    //   }, function(err) {
+    //     console.log(err);
+    //   });
+    // }
+
+
   // * show meta data as an object (reponse from AJAX call?)
   $scope.results = [];
   // * d3 object / data set (when data is changed page is update)
@@ -29,14 +52,21 @@ app.controller('appCtrl', function($scope, $http) {
     var season = 1;
     var seasonExists = true;
     var queryString = $scope.query;
-    $scope.query = ''; 
+    $scope.query = '';
+
+
+
     var getAllSeasons = function(seasonNumber) {
-    	$http({
-    		//need to handle url spaces
-    		method: 'GET',
-        params: {t: queryString, type: 'series', season: seasonNumber},
-    		url: 'api/shows/show',
-    	}).then(function(res) {
+      $http({
+        //need to handle url spaces
+        method: 'GET',
+        params: {
+          t: queryString,
+          type: 'series',
+          season: seasonNumber
+        },
+        url: 'api/shows/show',
+      }).then(function(res) {
         console.log(res.data, 'this is the response');
         if (res.data.Response === 'True') {
           $scope.results = res.data;
@@ -45,8 +75,8 @@ app.controller('appCtrl', function($scope, $http) {
         } else {
           console.log('this is brians pie', $scope.briansPie);
         }
-    		//run d3 function with data
-    	}, function(err) {
+        //run d3 function with data
+      }, function(err) {
         console.log(err);
       });
     };
@@ -54,4 +84,3 @@ app.controller('appCtrl', function($scope, $http) {
     getAllSeasons(season);
   };
 });
-
