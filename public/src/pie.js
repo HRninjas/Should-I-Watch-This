@@ -169,7 +169,7 @@ var drawPie = function() {
         .attr("d", arc) 
         .on('mouseover', tip.show)
         .on('mouseout', tip.hide)
-        .style('stroke-width', 5); 
+        .style('stroke-width', 2); 
     // calculate the weighted mean score
     var score = avgScore() || "Hello";
     if (score !== 'Hello') {

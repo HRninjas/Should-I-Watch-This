@@ -86,8 +86,7 @@ var seasonScore = [];
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<strong>Title:</strong> <span style='color:" + d[4] + "'>" + d[0] + "</span>" + "<br>" + "<strong>Rating:</strong> <span style='color:" + d[4] + "'>" + d[1] + "</span>" + "<br>" + "<strong>Season:</strong> <span style='color:" + d[4] + "'>" + d[2] + "</span>" + "<br>" + "<strong>Episode:</strong> <span style='color:" + d[4] + "'>" + d[3] + "</span>";
-    });
+return "<strong>Title:</strong> <span style='color:" + d[4] + "'>" + d[0] + "</span>" + "<br>" + "<strong>Season:</strong> <span style='color:" + d[4] + "'>" + d[2] + "</span>" + "<br>" + "<strong>Episode:</strong> <span style='color:" + d[4] + "'>" + d[3] + "</span>" + "<br>" + "<strong>Rating:</strong> <span style='color:" + d[4] + "'>" + d[1] + "</span>" ;    });
 
   //Define Graph Space, Initialize d3 (This sets how big the div is)
   d3.selectAll('svg')

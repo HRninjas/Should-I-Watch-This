@@ -10,7 +10,7 @@ angular.module('app.auth', [])
     Auth.signin($scope.user)
       .then(function (token) {
         $window.localStorage.setItem('com.tv', token);
-        $location.path('/links');
+        $location.path('/');
       })
       .catch(function (error) {
         console.error(error);
@@ -21,7 +21,7 @@ angular.module('app.auth', [])
     Auth.signup($scope.user)
       .then(function (token) {
         $window.localStorage.setItem('com.tv', token);
-        $location.path('/links');
+        $location.path('/');
       })
       .catch(function (error) {
         console.error(error);
