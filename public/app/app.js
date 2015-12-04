@@ -1,8 +1,6 @@
 angular.module('app', [
   'app.main',
   'app.services',
-  'app.links',
-  'app.shorten',
   'app.auth',
   'ngRoute',
   'app.graphdirective',
@@ -10,11 +8,7 @@ angular.module('app', [
   'app.autocomplete'
 ])
 .config(function($routeProvider, $httpProvider) {
-
-
   $routeProvider
-  
-
     .when('/signin', {
       templateUrl: 'app/auth/signin.html',
       controller: 'AuthController'
@@ -28,11 +22,6 @@ angular.module('app', [
       templateUrl: 'app/main/main.html',
       controller: 'appCtrl'
      // , authenticate: true,
-    })
-    .when('/shorten', {
-      templateUrl: 'app/shorten/shorten.html',
-      controller: 'ShortenController',
-      authenticate: true,
     })
     .otherwise({
       redirectTo: '/'

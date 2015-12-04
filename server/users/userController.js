@@ -17,7 +17,8 @@ var userController = function(User) {
             .then(function(foundUser) {
               if (foundUser) {
                 var token = jwt.encode(user, 'secret');
-                res.json({token: token});
+                res.json({token: token,
+                          foundUser: foundUser});
               } else {
                 return next(new Error('No user'));
               }
@@ -86,10 +87,11 @@ var userController = function(User) {
         });
     }
   };
+
   return {
     signin: signin,
     signup: signup,
-    checkAuth: checkAuth
+    checkAuth: checkAuth,
   };
 };
 module.exports = userController;
